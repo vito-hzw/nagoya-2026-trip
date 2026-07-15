@@ -170,9 +170,11 @@
   .detail-section ul li::before{content:"";position:absolute;left:0;top:0.7em;width:4px;height:4px;border-radius:50%;background:var(--ink-faint);}
 
   /* poster images + lightbox */
-  .poster{width:100%;height:auto;border-radius:10px;border:1px solid var(--line);box-shadow:var(--shadow);cursor:zoom-in;display:block;}
+  .poster{width:100%;height:auto;border-radius:10px;border:1px solid var(--line);box-shadow:var(--shadow);cursor:zoom-in;display:block;margin-bottom:4px;}
   .poster-cap{font-size:0.72rem;color:var(--ink-faint);text-align:center;margin:6px 0 4px;}
   .detail-panel .poster-cap{margin-bottom:14px;}
+  .poster-label{font-family:var(--font-display);font-size:0.8rem;color:var(--ink-soft);margin:14px 0 6px;display:flex;align-items:center;gap:5px;}
+  .poster-label:first-child{margin-top:0;}
   .lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.9);display:none;z-index:100;overflow:auto;-webkit-overflow-scrolling:touch;}
   .lightbox.open{display:block;}
   .lightbox .lb-inner{min-height:100%;padding:56px 12px 28px;display:flex;justify-content:center;align-items:flex-start;}
@@ -375,7 +377,6 @@
 
   <section class="panel" id="panel-social">
     <h2 class="section-title">相片與聊天</h2>
-    <p class="section-sub">這次不做帳號登入,直接用大家已經在用的工具最方便</p>
 
     <a class="link-card" href="#" id="linkPhotos">
       <span class="ic" style="background:var(--gold-soft);color:var(--gold);">📷</span>
@@ -390,8 +391,7 @@
     </a>
 
     <div class="note-box">
-      <b>團主使用說明:</b> 打開這個網頁的原始碼,找到 <code>LINKS</code> 這個設定,把 <code>photos</code> 貼上 Google 相簿共享連結、<code>chat</code> 貼上 LINE 群組邀請連結即可,存檔後兩個按鈕就會直接開啟對應的相簿與群組,不用再另外開發上傳或聊天功能。
-    </div>
+      <b>旅途因為友人一起才會更愉快</b> 
   </section>
 
   <p class="footer-note">2026 名古屋親子自由行・17 人團・一起創造最棒的回憶</p>
@@ -432,10 +432,15 @@
       variants:{
         A:{ cat:'city', title:'名古屋市區・榮商圈巡禮',
           blocks:[{h:null, items:['綠洲21、名古屋電視塔','榮商圈逛街購物','松坂屋、三越、PARCO','矢場町美食、咖啡廳巡禮']}],
-          stay:'Hotel Forza Nagoya Sakae' },
+          stay:'Hotel Forza Nagoya Sakae',
+          detail:{ posters:[ {src:'sakae-map.jpg', cap:'榮商圈散步地圖'} ] } },
         B:{ cat:'aquarium', title:'名古屋港水族館',
           blocks:[{h:null, items:['必看:白鯨、虎鯨、海豚秀','夜間水族館超夢幻!','JETTY 商場晚餐、購物']}],
-          stay:'Hotel Forza Nagoya Sakae' }
+          stay:'Hotel Forza Nagoya Sakae',
+          detail:{ posters:[
+            {src:'aquarium-timeplan.jpg', cap:'全日參觀攻略時間軸（開館入場版）'},
+            {src:'aquarium-route-map.jpg', cap:'16:00 後最佳參觀路線攻略'}
+          ] } }
       } },
     { n:2, date:'2026-07-30', cat:'nature', title:'郡上八幡 → 高山老街探險', note:'包車一日遊',
       blocks:[
@@ -505,7 +510,11 @@
         {h:'下午・犬山城', items:['日本最古老天守']},
         {h:'晚上・犬山花火大會', items:['夏日限定,浪漫煙火']}
       ],
-      stay:'自由自在 OSU 302' },
+      stay:'自由自在 OSU 302',
+      detail:{ posters:[
+        {src:'osu-street-map.jpg', cap:'大須觀音商店街散步地圖'},
+        {src:'inuyama-map.jpg', cap:'犬山城散步地圖'}
+      ] } },
     { n:5, date:'2026-08-02', cat:'city', title:'長島 Outlet 購物趣',
       blocks:[{h:null, items:['爵士之夢長島 Outlet','超過 300 間品牌店','Nike、Adidas、樂高商店、藥妝店','美食街午餐、晚餐自由安排']}],
       stay:'自由自在 OSU 302' },
@@ -516,7 +525,12 @@
             {h:'名古屋城', items:['金鯱閣、本丸御殿、歷史巡禮']},
             {h:'名古屋港水族館', items:['白鯨、虎鯨、海豚秀','夜間水族館超夢幻']}
           ],
-          stay:'自由自在 OSU 302' },
+          stay:'自由自在 OSU 302',
+          detail:{ posters:[
+            {src:'nagoya-castle-map.jpg', cap:'名古屋城散步地圖'},
+            {src:'aquarium-timeplan.jpg', cap:'全日參觀攻略時間軸（開館入場版）'},
+            {src:'aquarium-route-map.jpg', cap:'16:00 後最佳參觀路線攻略'}
+          ] } },
         B:{ cat:'ghibli', title:'吉卜力公園', note:'2大2小專屬',
           blocks:[
             {h:'吉卜力公園', items:['青春之丘、大倉庫、龍貓森林等','吉卜力迷必訪,拍好拍滿!']},
@@ -540,7 +554,8 @@
         {t:'19:55', x:'楊廖 JX839 起飛（→ 桃園）'},
         {t:'20:05', x:'邱廖・黃陳・孟廷學長 IT269 起飛（→ 高雄）'},
         {t:'21:45', x:'韓江 IT209 起飛（→ 桃園）'}
-      ] }
+      ],
+      detail:{ posters:[ {src:'tokoname-map.jpg', cap:'常滑散步地圖'} ] } }
   ];
 
   // 同行家庭名單。之後要換成 Q 版圖片時,把對應的 img 填上圖片網址或 base64 資料
@@ -650,16 +665,18 @@
       }
       var detailHtml = '';
       if (d.detail){
-        var tl = '<div class="timeline">' + d.detail.timeline.map(function(t){
+        var tl = d.detail.timeline ? '<div class="timeline">' + d.detail.timeline.map(function(t){
           return '<div class="timeline-item"><div class="t num">' + t.t + '</div><div class="x">' + t.x + '</div></div>';
-        }).join('') + '</div>';
-        var secs = d.detail.sections.map(function(s){
+        }).join('') + '</div>' : '';
+        var secs = d.detail.sections ? d.detail.sections.map(function(s){
           return '<div class="detail-section" style="--cat-color:' + cat.color + '"><h4><span class="bar"></span>' + s.h + '</h4><ul>' +
             s.items.map(function(it){ return '<li>' + it + '</li>'; }).join('') + '</ul></div>';
-        }).join('');
-        var poster = d.detail.poster ?
-          '<img class="poster" loading="lazy" src="' + d.detail.poster + '" alt="' + d.title + ' 詳細行程海報">' +
-          '<div class="poster-cap">📸 點圖可放大看清楚</div>' : '';
+        }).join('') : '';
+        var posterList = d.detail.posters || (d.detail.poster ? [{src:d.detail.poster}] : []);
+        var poster = posterList.length ? posterList.map(function(p){
+          return (p.cap ? '<div class="poster-label">🗺 ' + p.cap + '</div>' : '') +
+            '<img class="poster" loading="lazy" src="' + p.src + '" alt="' + (p.cap || d.title) + '">';
+        }).join('') + '<div class="poster-cap">📸 點圖可放大看清楚</div>' : '';
         detailHtml = '<button class="detail-toggle" type="button" aria-expanded="false">查看詳細行程時間表 <span class="chev">▾</span></button>' +
           '<div class="detail-panel">' + poster + tl + secs + '</div>';
       }
