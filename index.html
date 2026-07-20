@@ -204,6 +204,18 @@
   .info-card h3{font-size:0.95rem;margin-bottom:8px;display:flex;align-items:center;gap:7px;}
   .info-card ul li{font-size:0.86rem;color:var(--ink-soft);padding:4px 0;position:relative;padding-left:14px;}
   .info-card ul li::before{content:"";position:absolute;left:0;top:0.65em;width:5px;height:5px;border-radius:50%;background:var(--ink-faint);}
+  .info-card ul li a{color:inherit;}
+  .addr-link{display:inline-flex;align-items:center;gap:4px;}
+
+  /* place quick-nav */
+  .place-list{display:flex;flex-direction:column;gap:8px;}
+  .place-row{display:flex;align-items:center;gap:11px;text-decoration:none;color:inherit;padding:2px 0;}
+  .place-row .pic{width:36px;height:36px;border-radius:9px;background:var(--bg-sunk);display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex:none;}
+  .place-row .ptxt{flex:1;min-width:0;}
+  .place-row .ptxt b{display:block;font-size:0.86rem;color:var(--ink);font-weight:600;}
+  .place-row .ptxt span{font-size:0.74rem;color:var(--ink-faint);}
+  .place-row .pgo{font-size:0.72rem;color:var(--accent);font-weight:600;flex:none;white-space:nowrap;}
+  .place-row + .place-row{border-top:1px solid var(--line);padding-top:10px;}
   .flight{padding:8px 0;border-bottom:1px solid var(--line);}
   .flight:first-of-type{padding-top:2px;}
   .flight:last-child{border-bottom:none;padding-bottom:0;}
@@ -248,9 +260,15 @@
   .food-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .food-item{background:var(--bg-elevated);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:0.84rem;color:var(--ink);box-shadow:var(--shadow);}
 
-  .checklist{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-  .checklist-item{font-size:0.84rem;color:var(--ink-soft);background:var(--bg-elevated);border:1px solid var(--line);border-radius:9px;padding:9px 10px;display:flex;gap:7px;align-items:flex-start;}
-  .checklist-item svg{flex:none;margin-top:1px;width:14px;height:14px;color:var(--green);}
+  .pack-section{margin-bottom:16px;}
+  .pack-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;}
+  .pack-head h3{font-family:var(--font-display);font-size:0.9rem;color:var(--ink);display:flex;align-items:center;gap:7px;margin:0;}
+  .pack-count{font-size:0.72rem;color:var(--ink-faint);font-variant-numeric:tabular-nums;}
+  .pack-list{display:flex;flex-direction:column;gap:6px;}
+  .pack-item{display:flex;align-items:center;gap:10px;background:var(--bg-elevated);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:0.86rem;color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .15s;}
+  .pack-item input{width:17px;height:17px;accent-color:var(--accent);flex:none;cursor:pointer;}
+  .pack-item.checked{opacity:0.5;}
+  .pack-item.checked .plabel{text-decoration:line-through;}
 
   /* photos & chat */
   .link-card{display:flex;align-items:center;gap:12px;background:var(--bg-elevated);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow);}
@@ -322,6 +340,12 @@
     <p class="section-sub">依你選的版本自動顯示・點圖可放大看清楚</p>
     <img class="poster" id="overviewPoster" loading="lazy" alt="8 天 7 夜行程總覽海報">
 
+    <h2 class="section-title">重要地點導航</h2>
+    <p class="section-sub">點一下直接用 Google 地圖導航過去</p>
+    <div class="info-card">
+      <div class="place-list" id="placeNav"></div>
+    </div>
+
     <h2 class="section-title">航班資訊</h2>
     <div class="info-card">
       <h3>✈️ 去程・7/29(三)</h3>
@@ -349,11 +373,7 @@
     <h2 class="section-title">住宿一覽</h2>
     <div class="info-card">
       <h3>🏨 3 間住宿・共 4 段入住</h3>
-      <ul>
-        <li>7/29(三):Hotel Forza Nagoya Sakae</li>
-        <li>7/30(四):fav Hida Takayama</li>
-        <li>7/31(五)〜8/5(三):自由自在 OSU 302(名古屋市中區大須1-25-45)</li>
-      </ul>
+      <ul id="accomList"></ul>
     </div>
   </section>
 
@@ -367,11 +387,12 @@
     <h2 class="section-title">必吃美食清單</h2>
     <div class="food-grid" id="foodGrid"></div>
 
-    <h2 class="section-title" style="margin-top:22px;">行前提醒</h2>
-    <div class="checklist" id="checklist"></div>
+    <h2 class="section-title" style="margin-top:22px;">打包清單</h2>
+    <p class="section-sub">點項目打勾,清單只存在你自己手機裡</p>
+    <div id="packList"></div>
 
     <div class="note-box">
-      <b>小提醒:</b> 高山、上高地早晚偏涼,建議帶薄外套;上高地、犬山花火大會人潮較多,請家長留意孩子與貴重物品。
+      <b>小提醒:</b> 高山、上高地早晚偏涼,建議帶薄外套;上高地、犬山花火大會人潮較多,請家長留意孩子與貴重物品;垃圾請分類,一起愛護環境。
     </div>
   </section>
 
@@ -575,11 +596,30 @@
 
   var FOOD = ['飛驒牛握壽司','飛驒牛燒肉','高山布丁','五平餅','名古屋雞翅','味噌豬排','雞翅飯','抹茶甜點','味噌烏龍麵'];
 
-  var CHECK = [
-    '護照、機票、保險證明','行動電源、充電線','雨具、防曬用品、帽子','薄外套(高山・上高地)',
-    '舒適好走的鞋子','常備藥品、暈車藥','垃圾請分類','愛護環境'
+  var PACK_CATS = [
+    { key:'docs', label:'證件類', icon:'📇', items:['護照','機票(電子/紙本備份)','旅遊保險證明'] },
+    { key:'elec', label:'3C 用品', icon:'🔌', items:['行動電源','充電線','相機','e-SIM購買或實體SIM'] },
+    { key:'wear', label:'衣物裝備', icon:'🧥', items:['雨具','防曬乳','帽子','太陽眼鏡','薄外套(高山・上高地早晚涼)','舒適好走的鞋子'] },
+    { key:'med', label:'藥品', icon:'💊', items:['個人常備藥','暈車藥'] }
   ];
-  var CHECK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg>';
+
+  function packKey(cat, item){ return 'nagoya-trip-pack-' + cat + '-' + item; }
+
+  // 重要地點:機場 + 各住宿。query 用地點名稱或地址,Google 地圖會自動搜尋定位
+  var PLACES = [
+    { icon:'✈️', label:'中部國際機場', sub:'去程抵達・回程出發', query:'中部国際空港 Chubu Centrair International Airport' },
+    { icon:'🏨', label:'Hotel Forza Nagoya Sakae', sub:'7/29(三) 住宿', query:'Hotel Forza Nagoya Sakae' },
+    { icon:'🏨', label:'fav Hida Takayama', sub:'7/30(四) 住宿', query:'fav Hida Takayama' },
+    { icon:'🏨', label:'自由自在 OSU 302', sub:'7/31(五)〜8/5(三) 住宿・名古屋市中區大須1-25-45', query:'名古屋市中区大須1-25-45' }
+  ];
+
+  var ACCOM = [
+    { date:'7/29(三)', name:'Hotel Forza Nagoya Sakae', addr:'', query:'Hotel Forza Nagoya Sakae' },
+    { date:'7/30(四)', name:'fav Hida Takayama', addr:'', query:'fav Hida Takayama' },
+    { date:'7/31(五)〜8/5(三)', name:'自由自在 OSU 302', addr:'名古屋市中區大須1-25-45', query:'名古屋市中区大須1-25-45' }
+  ];
+
+  function mapsUrl(query){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query); }
 
   function weekday(dateStr){
     var d = new Date(dateStr + 'T00:00:00');
@@ -725,9 +765,51 @@
     }).join('');
   }
 
-  function renderCheck(){
-    document.getElementById('checklist').innerHTML = CHECK.map(function(c){
-      return '<div class="checklist-item">' + CHECK_ICON + '<span>' + c + '</span></div>';
+  function packChecked(cat, item){
+    try { return localStorage.getItem(packKey(cat, item)) === '1'; } catch(e){ return false; }
+  }
+  function renderPack(){
+    document.getElementById('packList').innerHTML = PACK_CATS.map(function(c){
+      var checkedCount = c.items.filter(function(it){ return packChecked(c.key, it); }).length;
+      return '<div class="pack-section" data-cat="' + c.key + '">' +
+        '<div class="pack-head"><h3>' + c.icon + ' ' + c.label + '</h3><span class="pack-count num">' + checkedCount + '/' + c.items.length + '</span></div>' +
+        '<div class="pack-list">' + c.items.map(function(it){
+          var checked = packChecked(c.key, it);
+          return '<label class="pack-item' + (checked ? ' checked' : '') + '" data-item="' + it + '">' +
+            '<input type="checkbox" ' + (checked ? 'checked' : '') + '>' +
+            '<span class="plabel">' + it + '</span></label>';
+        }).join('') + '</div></div>';
+    }).join('');
+  }
+  function setupPack(){
+    document.getElementById('packList').addEventListener('change', function(e){
+      var input = e.target;
+      if (input.type !== 'checkbox') return;
+      var item = input.closest('.pack-item');
+      var section = input.closest('.pack-section');
+      var cat = section.getAttribute('data-cat');
+      var itemText = item.getAttribute('data-item');
+      try { localStorage.setItem(packKey(cat, itemText), input.checked ? '1' : '0'); } catch(err){}
+      item.classList.toggle('checked', input.checked);
+      var catDef = PACK_CATS.filter(function(c){ return c.key === cat; })[0];
+      var count = catDef.items.filter(function(it){ return packChecked(cat, it); }).length;
+      section.querySelector('.pack-count').textContent = count + '/' + catDef.items.length;
+    });
+  }
+
+  function renderPlaces(){
+    document.getElementById('placeNav').innerHTML = PLACES.map(function(p){
+      return '<a class="place-row" href="' + mapsUrl(p.query) + '" target="_blank" rel="noopener">' +
+        '<span class="pic">' + p.icon + '</span>' +
+        '<span class="ptxt"><b>' + p.label + '</b><span>' + p.sub + '</span></span>' +
+        '<span class="pgo">導航 ›</span></a>';
+    }).join('');
+  }
+
+  function renderAccom(){
+    document.getElementById('accomList').innerHTML = ACCOM.map(function(a){
+      return '<li><a class="addr-link" href="' + mapsUrl(a.query) + '" target="_blank" rel="noopener">' +
+        a.date + ':' + a.name + (a.addr ? '(' + a.addr + ')' : '') + ' 🗺</a></li>';
     }).join('');
   }
 
@@ -858,8 +940,11 @@
   renderDaystrip();
   renderDays();
   renderOverviewPoster();
+  renderPlaces();
+  renderAccom();
   renderFood();
-  renderCheck();
+  renderPack();
+  setupPack();
   renderLinks();
   setupTabs();
   setupThemeToggle();
