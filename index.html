@@ -144,6 +144,10 @@
   .status-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none;box-shadow:0 0 0 3px var(--accent-soft);}
   .status-banner b{font-family:var(--font-display);}
 
+  .weather-bar{margin:10px 20px 0;}
+  .weather-bar .wb-label{font-family:var(--font-display);font-size:0.8rem;font-weight:600;color:var(--ink-soft);margin-bottom:6px;display:flex;align-items:baseline;gap:6px;}
+  .weather-bar .wb-label .stitle-sub{font-size:0.7rem;}
+
   /* version selector */
   .version-bar{margin:12px 20px 0;}
   .version-bar .vlabel{font-size:0.74rem;color:var(--ink-faint);letter-spacing:0.04em;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
@@ -190,7 +194,9 @@
   .panel.active{display:block;}
 
   /* overview */
-  .section-title{font-size:1.05rem;margin-bottom:10px;color:var(--ink);}
+  .section-title{font-size:1.05rem;margin-bottom:10px;color:var(--ink);display:flex;align-items:baseline;flex-wrap:wrap;column-gap:6px;row-gap:2px;}
+  .stitle-sub{font-family:var(--font-body);font-size:0.78rem;font-weight:400;color:var(--ink-faint);}
+  .stitle-sub::before{content:"- ";}
   .section-title + .section-sub{margin-top:-6px;margin-bottom:12px;}
   .section-sub{font-size:0.82rem;color:var(--ink-faint);}
   .daystrip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px;}
@@ -218,20 +224,20 @@
   .place-row + .place-row{border-top:1px solid var(--line);padding-top:10px;}
 
   /* weather carousel */
-  .weather-card{position:relative;overflow:hidden;border-radius:12px;background:var(--bg-elevated);border:1px solid var(--line);box-shadow:var(--shadow);margin-bottom:14px;touch-action:pan-y;}
+  .weather-card{position:relative;overflow:hidden;border-radius:10px;background:var(--bg-elevated);border:1px solid var(--line);box-shadow:var(--shadow);touch-action:pan-y;}
   .weather-track{display:flex;transition:transform .35s ease;}
-  .weather-slide{flex:0 0 100%;padding:18px 18px 10px;display:flex;align-items:center;gap:14px;min-width:0;}
-  .weather-slide .wicon{font-size:2.3rem;flex:none;line-height:1;}
+  .weather-slide{flex:0 0 100%;padding:9px 14px;display:flex;align-items:center;gap:10px;min-width:0;}
+  .weather-slide .wicon{font-size:1.5rem;flex:none;line-height:1;}
   .weather-slide .wtxt{flex:1;min-width:0;}
-  .weather-slide .wname{font-family:var(--font-display);font-size:1.02rem;color:var(--ink);display:flex;align-items:baseline;gap:6px;}
-  .weather-slide .wname .wsub{font-size:0.7rem;color:var(--ink-faint);font-family:var(--font-body);}
-  .weather-slide .wcond{font-size:0.82rem;color:var(--ink-soft);margin-top:3px;}
-  .weather-slide .wtemp{font-family:var(--font-display);font-size:1.7rem;color:var(--accent);flex:none;text-align:right;line-height:1;}
-  .weather-slide .wtemp .wlo{font-size:0.78rem;color:var(--ink-faint);font-family:var(--font-body);display:block;margin-top:4px;font-weight:400;}
-  .weather-dots{display:flex;justify-content:center;gap:6px;padding-bottom:12px;}
-  .weather-dot{width:6px;height:6px;border-radius:50%;background:var(--line-strong);border:none;padding:0;cursor:pointer;transition:width .2s,background .2s;}
-  .weather-dot.active{background:var(--accent);width:16px;border-radius:3px;}
-  .weather-slide.wt-error{color:var(--ink-faint);font-size:0.84rem;justify-content:center;text-align:center;}
+  .weather-slide .wname{font-family:var(--font-display);font-size:0.88rem;color:var(--ink);display:flex;align-items:baseline;gap:5px;}
+  .weather-slide .wname .wsub{font-size:0.66rem;color:var(--ink-faint);font-family:var(--font-body);}
+  .weather-slide .wcond{font-size:0.74rem;color:var(--ink-soft);margin-top:1px;}
+  .weather-slide .wtemp{font-family:var(--font-display);font-size:1.15rem;color:var(--accent);flex:none;text-align:right;line-height:1;}
+  .weather-slide .wtemp .wlo{font-size:0.66rem;color:var(--ink-faint);font-family:var(--font-body);display:block;margin-top:2px;font-weight:400;}
+  .weather-dots{display:flex;justify-content:center;gap:5px;padding-bottom:6px;}
+  .weather-dot{width:5px;height:5px;border-radius:50%;background:var(--line-strong);border:none;padding:0;cursor:pointer;transition:width .2s,background .2s;}
+  .weather-dot.active{background:var(--accent);width:13px;border-radius:3px;}
+  .weather-slide.wt-error{color:var(--ink-faint);font-size:0.78rem;justify-content:center;text-align:center;padding:12px 14px;}
   .flight{padding:8px 0;border-bottom:1px solid var(--line);}
   .flight:first-of-type{padding-top:2px;}
   .flight:last-child{border-bottom:none;padding-bottom:0;}
@@ -326,6 +332,14 @@
     <span id="statusText">計算中…</span>
   </div>
 
+  <div class="weather-bar">
+    <div class="wb-label">☁️ 各地天氣<span class="stitle-sub" id="weatherUpdated">載入中…</span></div>
+    <div class="weather-card" id="weatherCard">
+      <div class="weather-track" id="weatherTrack"></div>
+      <div class="weather-dots" id="weatherDots"></div>
+    </div>
+  </div>
+
   <div class="version-bar">
     <div class="vlabel">🧭 選擇你的行程版本（Day1、Day6 不同）</div>
     <div class="version-seg" id="versionSeg">
@@ -348,23 +362,13 @@
   </nav>
 
   <section class="panel active" id="panel-overview">
-    <h2 class="section-title">行程總覽</h2>
-    <p class="section-sub">點一張卡片可直接跳到當天的詳細行程</p>
+    <h2 class="section-title">行程總覽<span class="stitle-sub">點一張卡片可直接跳到當天的詳細行程</span></h2>
     <div class="daystrip" id="daystrip"></div>
 
-    <h2 class="section-title">完整行程海報</h2>
-    <p class="section-sub">依你選的版本自動顯示・點圖可放大看清楚</p>
+    <h2 class="section-title">完整行程海報<span class="stitle-sub">依你選的版本自動顯示・點圖可放大看清楚</span></h2>
     <img class="poster" id="overviewPoster" loading="lazy" alt="8 天 7 夜行程總覽海報">
 
-    <h2 class="section-title">各地天氣</h2>
-    <p class="section-sub" id="weatherUpdated">載入中…</p>
-    <div class="weather-card" id="weatherCard">
-      <div class="weather-track" id="weatherTrack"></div>
-      <div class="weather-dots" id="weatherDots"></div>
-    </div>
-
-    <h2 class="section-title">重要地點導航</h2>
-    <p class="section-sub">點一下直接用 Google 地圖導航過去</p>
+    <h2 class="section-title">重要地點導航<span class="stitle-sub">點一下直接用 Google 地圖導航過去</span></h2>
     <div class="info-card">
       <div class="place-list" id="placeNav"></div>
     </div>
@@ -401,8 +405,7 @@
   </section>
 
   <section class="panel" id="panel-itinerary">
-    <h2 class="section-title">每日行程</h2>
-    <p class="section-sub">今天所在的那一天會用紅色標出來</p>
+    <h2 class="section-title">每日行程<span class="stitle-sub">今天所在的那一天會用紅色標出來</span></h2>
     <div id="dayList"></div>
   </section>
 
@@ -410,8 +413,7 @@
     <h2 class="section-title">必吃美食清單</h2>
     <div class="food-grid" id="foodGrid"></div>
 
-    <h2 class="section-title" style="margin-top:22px;">打包清單</h2>
-    <p class="section-sub">點項目打勾,清單只存在你自己手機裡</p>
+    <h2 class="section-title" style="margin-top:22px;">打包清單<span class="stitle-sub">點項目打勾,清單只存在你自己手機裡</span></h2>
     <div id="packList"></div>
 
     <div class="note-box">
