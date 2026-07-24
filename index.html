@@ -216,6 +216,22 @@
   .place-row .ptxt span{font-size:0.74rem;color:var(--ink-faint);}
   .place-row .pgo{font-size:0.72rem;color:var(--accent);font-weight:600;flex:none;white-space:nowrap;}
   .place-row + .place-row{border-top:1px solid var(--line);padding-top:10px;}
+
+  /* weather carousel */
+  .weather-card{position:relative;overflow:hidden;border-radius:12px;background:var(--bg-elevated);border:1px solid var(--line);box-shadow:var(--shadow);margin-bottom:14px;touch-action:pan-y;}
+  .weather-track{display:flex;transition:transform .35s ease;}
+  .weather-slide{flex:0 0 100%;padding:18px 18px 10px;display:flex;align-items:center;gap:14px;min-width:0;}
+  .weather-slide .wicon{font-size:2.3rem;flex:none;line-height:1;}
+  .weather-slide .wtxt{flex:1;min-width:0;}
+  .weather-slide .wname{font-family:var(--font-display);font-size:1.02rem;color:var(--ink);display:flex;align-items:baseline;gap:6px;}
+  .weather-slide .wname .wsub{font-size:0.7rem;color:var(--ink-faint);font-family:var(--font-body);}
+  .weather-slide .wcond{font-size:0.82rem;color:var(--ink-soft);margin-top:3px;}
+  .weather-slide .wtemp{font-family:var(--font-display);font-size:1.7rem;color:var(--accent);flex:none;text-align:right;line-height:1;}
+  .weather-slide .wtemp .wlo{font-size:0.78rem;color:var(--ink-faint);font-family:var(--font-body);display:block;margin-top:4px;font-weight:400;}
+  .weather-dots{display:flex;justify-content:center;gap:6px;padding-bottom:12px;}
+  .weather-dot{width:6px;height:6px;border-radius:50%;background:var(--line-strong);border:none;padding:0;cursor:pointer;transition:width .2s,background .2s;}
+  .weather-dot.active{background:var(--accent);width:16px;border-radius:3px;}
+  .weather-slide.wt-error{color:var(--ink-faint);font-size:0.84rem;justify-content:center;text-align:center;}
   .flight{padding:8px 0;border-bottom:1px solid var(--line);}
   .flight:first-of-type{padding-top:2px;}
   .flight:last-child{border-bottom:none;padding-bottom:0;}
@@ -339,6 +355,13 @@
     <h2 class="section-title">完整行程海報</h2>
     <p class="section-sub">依你選的版本自動顯示・點圖可放大看清楚</p>
     <img class="poster" id="overviewPoster" loading="lazy" alt="8 天 7 夜行程總覽海報">
+
+    <h2 class="section-title">各地天氣</h2>
+    <p class="section-sub" id="weatherUpdated">載入中…</p>
+    <div class="weather-card" id="weatherCard">
+      <div class="weather-track" id="weatherTrack"></div>
+      <div class="weather-dots" id="weatherDots"></div>
+    </div>
 
     <h2 class="section-title">重要地點導航</h2>
     <p class="section-sub">點一下直接用 Google 地圖導航過去</p>
@@ -621,6 +644,28 @@
 
   function mapsUrl(query){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query); }
 
+  var WEATHER_PLACES = [
+    { name:'名古屋', sub:'主要駐點', lat:35.1815, lon:136.9066 },
+    { name:'高山', sub:'Day2', lat:36.1408, lon:137.2528 },
+    { name:'上高地', sub:'Day3・海拔約1500m', lat:36.2500, lon:137.6333 },
+    { name:'桃園機場', sub:'部分家庭回程', lat:25.0777, lon:121.2328 },
+    { name:'高雄機場', sub:'部分家庭回程', lat:22.5771, lon:120.3500 }
+  ];
+
+  var WMO_MAP = {
+    0:['☀️','晴朗'], 1:['🌤️','大致晴朗'], 2:['⛅','多雲'], 3:['☁️','陰天'],
+    45:['🌫️','起霧'], 48:['🌫️','起霧'],
+    51:['🌦️','小雨'], 53:['🌦️','小雨'], 55:['🌧️','雨'],
+    56:['🌧️','凍雨'], 57:['🌧️','凍雨'],
+    61:['🌧️','小雨'], 63:['🌧️','中雨'], 65:['🌧️','大雨'],
+    66:['🌧️','凍雨'], 67:['🌧️','凍雨'],
+    71:['🌨️','小雪'], 73:['🌨️','中雪'], 75:['🌨️','大雪'], 77:['🌨️','雪粒'],
+    80:['🌦️','陣雨'], 81:['🌦️','陣雨'], 82:['⛈️','強陣雨'],
+    85:['🌨️','陣雪'], 86:['🌨️','陣雪'],
+    95:['⛈️','雷雨'], 96:['⛈️','雷雨(冰霰)'], 99:['⛈️','雷雨(冰霰)']
+  };
+  function wmoInfo(code){ return WMO_MAP[code] || ['🌡️','—']; }
+
   function weekday(dateStr){
     var d = new Date(dateStr + 'T00:00:00');
     return ['日','一','二','三','四','五','六'][d.getDay()];
@@ -797,6 +842,117 @@
     });
   }
 
+  var WEATHER_CACHE_KEY = 'nagoya-trip-weather-cache';
+  var weatherSlide = 0;
+  var weatherAutoTimer = null;
+
+  function renderWeatherSlides(data, updatedLabel){
+    var track = document.getElementById('weatherTrack');
+    var dots = document.getElementById('weatherDots');
+    if (!data){
+      track.innerHTML = '<div class="weather-slide wt-error">目前無法取得天氣資料,請確認網路連線</div>';
+      dots.innerHTML = '';
+      document.getElementById('weatherUpdated').textContent = '無法載入';
+      return;
+    }
+    track.innerHTML = data.map(function(w){
+      var info = wmoInfo(w.code);
+      return '<div class="weather-slide">' +
+        '<span class="wicon">' + info[0] + '</span>' +
+        '<span class="wtxt"><span class="wname">' + w.name + ' <span class="wsub">' + w.sub + '</span></span>' +
+        '<span class="wcond">' + info[1] + '</span></span>' +
+        '<span class="wtemp">' + Math.round(w.temp) + '°<span class="wlo">' + Math.round(w.tmin) + '° / ' + Math.round(w.tmax) + '°</span></span>' +
+      '</div>';
+    }).join('');
+    dots.innerHTML = data.map(function(w, i){
+      return '<button class="weather-dot' + (i===0 ? ' active' : '') + '" type="button" data-i="' + i + '" aria-label="' + w.name + '"></button>';
+    }).join('');
+    document.getElementById('weatherUpdated').textContent = updatedLabel;
+    weatherSlide = 0;
+    updateWeatherTrack();
+  }
+
+  function updateWeatherTrack(){
+    var track = document.getElementById('weatherTrack');
+    if (!track) return;
+    track.style.transform = 'translateX(-' + (weatherSlide * 100) + '%)';
+    var dots = document.querySelectorAll('.weather-dot');
+    dots.forEach(function(d, i){ d.classList.toggle('active', i === weatherSlide); });
+  }
+
+  function goWeatherSlide(i){
+    var total = document.querySelectorAll('.weather-dot').length;
+    if (!total) return;
+    weatherSlide = (i + total) % total;
+    updateWeatherTrack();
+  }
+
+  function setupWeatherCarousel(){
+    document.getElementById('weatherDots').addEventListener('click', function(e){
+      var dot = e.target.closest('.weather-dot');
+      if (!dot) return;
+      goWeatherSlide(parseInt(dot.getAttribute('data-i'), 10));
+      restartWeatherAuto();
+    });
+    var card = document.getElementById('weatherCard');
+    var startX = null;
+    card.addEventListener('touchstart', function(e){ startX = e.touches[0].clientX; }, {passive:true});
+    card.addEventListener('touchend', function(e){
+      if (startX === null) return;
+      var dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 40){ goWeatherSlide(weatherSlide + (dx < 0 ? 1 : -1)); restartWeatherAuto(); }
+      startX = null;
+    }, {passive:true});
+    restartWeatherAuto();
+  }
+
+  function restartWeatherAuto(){
+    if (weatherAutoTimer) clearInterval(weatherAutoTimer);
+    weatherAutoTimer = setInterval(function(){ goWeatherSlide(weatherSlide + 1); }, 4000);
+  }
+
+  function fmtUpdatedTime(ts){
+    var d = new Date(ts);
+    var hh = ('0' + d.getHours()).slice(-2);
+    var mm = ('0' + d.getMinutes()).slice(-2);
+    return '更新於 ' + hh + ':' + mm;
+  }
+
+  function loadWeather(){
+    var cached = null;
+    try { cached = JSON.parse(localStorage.getItem(WEATHER_CACHE_KEY) || 'null'); } catch(e){}
+    if (cached){ renderWeatherSlides(cached.data, fmtUpdatedTime(cached.ts) + '(快取)'); }
+    else { document.getElementById('weatherUpdated').textContent = '載入中…'; }
+
+    var lats = WEATHER_PLACES.map(function(p){ return p.lat; }).join(',');
+    var lons = WEATHER_PLACES.map(function(p){ return p.lon; }).join(',');
+    var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lats + '&longitude=' + lons +
+      '&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1';
+
+    fetch(url).then(function(res){
+      if (!res.ok) throw new Error('bad status');
+      return res.json();
+    }).then(function(json){
+      var results = Array.isArray(json) ? json : [json];
+      var data = WEATHER_PLACES.map(function(p, i){
+        var r = results[i];
+        return {
+          name:p.name, sub:p.sub,
+          temp:r.current.temperature_2m,
+          code:r.current.weather_code,
+          tmax:r.daily.temperature_2m_max[0],
+          tmin:r.daily.temperature_2m_min[0]
+        };
+      });
+      var ts = Date.now();
+      try { localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ts:ts, data:data})); } catch(e){}
+      renderWeatherSlides(data, fmtUpdatedTime(ts));
+    }).catch(function(){
+      if (!cached) renderWeatherSlides(null);
+      else document.getElementById('weatherUpdated').textContent = fmtUpdatedTime(cached.ts) + '(快取・目前離線)';
+    });
+  }
+
   function renderPlaces(){
     document.getElementById('placeNav').innerHTML = PLACES.map(function(p){
       return '<a class="place-row" href="' + mapsUrl(p.query) + '" target="_blank" rel="noopener">' +
@@ -940,6 +1096,8 @@
   renderDaystrip();
   renderDays();
   renderOverviewPoster();
+  loadWeather();
+  setupWeatherCarousel();
   renderPlaces();
   renderAccom();
   renderFood();
