@@ -46,6 +46,7 @@
     --shadow:0 1px 2px rgba(32,42,51,0.06), 0 6px 20px rgba(32,42,51,0.05);
     --font-display:'Hiragino Mincho ProN','Noto Serif TC','Songti TC','PMingLiU',serif;
     --font-body:'Hiragino Sans','PingFang TC','Noto Sans TC','Microsoft JhengHei',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    color-scheme: light dark;
   }
   @media (prefers-color-scheme: dark){
     :root{
@@ -84,6 +85,7 @@
     --grey:#A6A093; --grey-soft:rgba(166,160,147,0.16);
     --violet:#A594D4; --violet-soft:rgba(165,148,212,0.18);
     --shadow:0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    color-scheme: dark;
   }
   :root[data-theme="light"]{
     --bg:#F4F5EF; --bg-elevated:#FFFFFF; --bg-sunk:#EAEBE2;
@@ -96,6 +98,7 @@
     --grey:#6B6459; --grey-soft:rgba(107,100,89,0.14);
     --violet:#6C5B9E; --violet-soft:rgba(108,91,158,0.14);
     --shadow:0 1px 2px rgba(32,42,51,0.06), 0 6px 20px rgba(32,42,51,0.05);
+    color-scheme: light;
   }
 
   *{box-sizing:border-box;}
@@ -267,6 +270,11 @@
   .bullet-list li{font-size:0.88rem;color:var(--ink);padding:3px 0 3px 14px;position:relative;line-height:1.45;}
   .bullet-list li::before{content:"";position:absolute;left:0;top:0.72em;width:5px;height:5px;border-radius:50%;background:var(--cat-color,var(--ink-faint));}
   .day-foot{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line);}
+  .day-maplink{display:flex;align-items:center;gap:9px;background:var(--bg-sunk);border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:0.82rem;color:var(--ink);text-decoration:none;}
+  .day-maplink .go{margin-left:auto;font-size:0.74rem;color:var(--accent);font-weight:600;flex:none;white-space:nowrap;}
+  .day-maplink-group{display:flex;flex-direction:column;gap:8px;}
+  .day-maplink-group.top{margin-bottom:12px;}
+  .day-maplink-group.pre-detail{margin-top:12px;}
   .pill{font-size:0.76rem;padding:4px 9px;border-radius:20px;display:inline-flex;align-items:center;gap:5px;}
   .pill-stay{background:var(--bg-sunk);color:var(--ink-soft);}
   .pill-note{background:var(--accent-soft);color:var(--accent);font-weight:600;}
@@ -301,6 +309,26 @@
   .link-card .go{font-size:0.8rem;color:var(--ink-faint);}
   .link-card.disabled{opacity:0.6;}
   .note-box{background:var(--gold-soft);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:0.83rem;color:var(--ink-soft);line-height:1.6;margin-top:16px;}
+
+  /* shopping calculator */
+  .calc-card{background:var(--bg-elevated);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow);margin-bottom:14px;}
+  .calc-row{display:flex;gap:10px;margin-bottom:10px;}
+  .calc-field{flex:1;display:flex;flex-direction:column;gap:5px;min-width:0;}
+  .calc-label{font-size:0.72rem;color:var(--ink-faint);}
+  .calc-inputwrap{display:flex;align-items:center;background:var(--bg-sunk);border:1px solid var(--line);border-radius:8px;padding:0 10px;}
+  .calc-inputwrap .calc-prefix,.calc-inputwrap .calc-suffix{font-size:0.85rem;color:var(--ink-faint);flex:none;}
+  .calc-inputwrap input{border:none;background:none;color:var(--ink);font-size:0.95rem;font-family:var(--font-display);padding:9px 4px;width:100%;min-width:0;}
+  .calc-field select{background:var(--bg-sunk);border:1px solid var(--line);border-radius:8px;padding:9px 8px;font-family:var(--font-body);font-size:0.84rem;color:var(--ink);width:100%;}
+  .calc-inputwrap input:focus,.calc-field select:focus{outline:2px solid var(--accent);outline-offset:-1px;}
+  .calc-result{margin-top:2px;display:flex;flex-direction:column;gap:6px;}
+  .calc-line{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:9px 11px;border-radius:8px;background:var(--bg-sunk);border:1px solid transparent;}
+  .calc-line .cl-label{font-size:0.82rem;color:var(--ink-soft);}
+  .calc-line .cl-note{font-size:0.7rem;color:var(--ink-faint);display:block;margin-top:2px;}
+  .calc-line .cl-value{font-family:var(--font-display);font-size:1.02rem;color:var(--ink);font-variant-numeric:tabular-nums;flex:none;white-space:nowrap;}
+  .calc-line.best{border-color:var(--accent);background:var(--accent-soft);}
+  .calc-line.best .cl-value{color:var(--accent);}
+  .calc-rate{margin-top:10px;font-size:0.76rem;color:var(--ink-soft);text-align:center;font-variant-numeric:tabular-nums;}
+  .calc-caveat{margin-top:6px;font-size:0.68rem;color:var(--ink-faint);text-align:center;line-height:1.5;}
   .note-box b{color:var(--ink);}
 
   .footer-note{text-align:center;font-size:0.74rem;color:var(--ink-faint);padding:22px 20px 4px;}
@@ -413,6 +441,41 @@
     <h2 class="section-title">必吃美食清單</h2>
     <div class="food-grid" id="foodGrid"></div>
 
+    <h2 class="section-title" style="margin-top:22px;">購物比價小工具<span class="stitle-sub">輸入日幣金額,比較現金/刷卡/退稅後的台幣花費</span></h2>
+    <div class="calc-card">
+      <div class="calc-row">
+        <label class="calc-field grow">
+          <span class="calc-label">日幣金額</span>
+          <div class="calc-inputwrap"><span class="calc-prefix">¥</span><input type="number" id="calcJpy" inputmode="decimal" placeholder="0" min="0"></div>
+        </label>
+      </div>
+      <div class="calc-row">
+        <label class="calc-field grow">
+          <span class="calc-label">退稅率</span>
+          <select id="calcTaxRate">
+            <option value="0.10" selected>10%(一般商品)</option>
+            <option value="0.08">8%(食品飲料)</option>
+            <option value="0">不適用退稅</option>
+          </select>
+        </label>
+      </div>
+      <div class="calc-row">
+        <label class="calc-field">
+          <span class="calc-label">刷卡海外手續費</span>
+          <div class="calc-inputwrap"><input type="number" id="calcCardFee" inputmode="decimal" value="1.5" step="0.1" min="0"><span class="calc-suffix">%</span></div>
+        </label>
+        <label class="calc-field">
+          <span class="calc-label">刷卡回饋</span>
+          <div class="calc-inputwrap"><input type="number" id="calcCardCashback" inputmode="decimal" value="0" step="0.1" min="0"><span class="calc-suffix">%</span></div>
+        </label>
+      </div>
+
+      <div class="calc-result" id="calcResult"></div>
+
+      <div class="calc-rate" id="calcRateInfo">匯率載入中…</div>
+      <div class="calc-caveat">匯率為參考中間價,實際刷卡/現場換匯會依銀行或兌換所有些價差,僅供快速比價參考。</div>
+    </div>
+
     <h2 class="section-title" style="margin-top:22px;">打包清單<span class="stitle-sub">點項目打勾,清單只存在你自己手機裡</span></h2>
     <div id="packList"></div>
 
@@ -473,27 +536,23 @@
     depart:  {label:'伴手返程', color:'var(--grey)',  soft:'var(--grey-soft)'}
   };
 
+  var AIRPORT_LINKS = [
+    { label:'中部國際空港 樓層圖', url:'https://www.centrair.jp/en/map/index.html' },
+    { label:'中部國際空港 航廈間移動指南', url:'https://www.centrair.jp/en/flight/flow/move-terminals/index.html' }
+  ];
+
   var DAYS = [
     { n:1, date:'2026-07-29',
+      mapLinkTop: AIRPORT_LINKS,
       variants:{
         A:{ cat:'city', title:'名古屋市區・榮商圈巡禮',
           blocks:[{h:null, items:['綠洲21、名古屋電視塔','榮商圈逛街購物','松坂屋、三越、PARCO','矢場町美食、咖啡廳巡禮']}],
           stay:'Hotel Forza Nagoya Sakae',
-          detail:{ posters:[
-            {src:'centrair-overview.png', cap:'機場航廈位置總覽（T1・T2・Access Plaza）'},
-            {src:'centrair-t1-arrival.png', cap:'T1 國際線入境樓層圖(JX838・楊廖家)'},
-            {src:'centrair-t2-arrival.png', cap:'T2 國際線入境樓層圖(IT206・其他四家)'},
-            {src:'centrair-plaza-bus.png', cap:'Access Plaza 1F・巴士/計程車乘車處'},
-            {src:'sakae-map.jpg', cap:'榮商圈散步地圖'}
-          ] } },
+          detail:{ posters:[ {src:'sakae-map.jpg', cap:'榮商圈散步地圖'} ] } },
         B:{ cat:'aquarium', title:'名古屋港水族館',
           blocks:[{h:null, items:['必看:白鯨、虎鯨、海豚秀','夜間水族館超夢幻!','JETTY 商場晚餐、購物']}],
           stay:'Hotel Forza Nagoya Sakae',
           detail:{ posters:[
-            {src:'centrair-overview.png', cap:'機場航廈位置總覽（T1・T2・Access Plaza）'},
-            {src:'centrair-t1-arrival.png', cap:'T1 國際線入境樓層圖(JX838・楊廖家)'},
-            {src:'centrair-t2-arrival.png', cap:'T2 國際線入境樓層圖(IT206・其他四家)'},
-            {src:'centrair-plaza-bus.png', cap:'Access Plaza 1F・巴士/計程車乘車處'},
             {src:'aquarium-timeplan.jpg', cap:'全日參觀攻略時間軸（開館入場版）'},
             {src:'aquarium-route-map.jpg', cap:'16:00 後最佳參觀路線攻略'}
           ] } }
@@ -611,12 +670,8 @@
         {t:'20:05', x:'邱廖・黃陳・孟廷學長 IT269 起飛（→ 高雄）'},
         {t:'21:45', x:'韓江 IT209 起飛（→ 桃園）'}
       ],
-      detail:{ posters:[
-        {src:'centrair-plaza-train.png', cap:'Access Plaza 2F・中部國際空港駅(搭名鐵前往常滑)'},
-        {src:'tokoname-map.jpg', cap:'常滑散步地圖'},
-        {src:'centrair-t1-departure.png', cap:'T1 國際線出發樓層圖(JX839・楊廖家)'},
-        {src:'centrair-t2-departure.png', cap:'T2 國際線出發樓層圖(IT269/IT209・其他四家)'}
-      ] } }
+      detail:{ posters:[ {src:'tokoname-map.jpg', cap:'常滑散步地圖'} ] },
+      mapLinkPreDetail: AIRPORT_LINKS }
   ];
 
   // 同行家庭名單。之後要換成 Q 版圖片時,把對應的 img 填上圖片網址或 base64 資料
@@ -740,7 +795,14 @@
     wrap.innerHTML = days().map(function(d, i){
       var cat = CATS[d.cat];
       var isToday = i === todayIdx;
+      function mapLinkGroupHtml(links, pos){
+        return '<div class="day-maplink-group ' + pos + '">' + links.map(function(ml){
+          return '<a class="day-maplink" href="' + ml.url + '" target="_blank" rel="noopener">' +
+            '<span>🗺</span><span>' + ml.label + '</span><span class="go">開啟 ›</span></a>';
+        }).join('') + '</div>';
+      }
       var body = '';
+      if (d.mapLinkTop) body += mapLinkGroupHtml(d.mapLinkTop, 'top');
       if (d.blocks){
         body += d.blocks.map(function(b){
           return '<div class="block" style="--cat-color:' + cat.color + '">' +
@@ -779,7 +841,9 @@
           return (p.cap ? '<div class="poster-label">🗺 ' + p.cap + '</div>' : '') +
             '<img class="poster" loading="lazy" src="' + p.src + '" alt="' + (p.cap || d.title) + '">';
         }).join('') + '<div class="poster-cap">📸 點圖可放大看清楚</div>' : '';
-        detailHtml = '<button class="detail-toggle" type="button" aria-expanded="false">查看詳細行程時間表 <span class="chev">▾</span></button>' +
+        var preDetailLinks = d.mapLinkPreDetail ? mapLinkGroupHtml(d.mapLinkPreDetail, 'pre-detail') : '';
+        detailHtml = preDetailLinks +
+          '<button class="detail-toggle" type="button" aria-expanded="false">查看詳細行程時間表 <span class="chev">▾</span></button>' +
           '<div class="detail-panel">' + poster + tl + secs + '</div>';
       }
       return '<article class="day-card" id="day-' + d.n + '">' +
@@ -933,6 +997,89 @@
     var hh = ('0' + d.getHours()).slice(-2);
     var mm = ('0' + d.getMinutes()).slice(-2);
     return '更新於 ' + hh + ':' + mm;
+  }
+
+  var FX_CACHE_KEY = 'nagoya-trip-fx-cache';
+  var fxRate = null;
+
+  function fmtMoney(n){ return Math.round(n).toLocaleString('en-US'); }
+
+  function updateFxLabel(text){
+    var el = document.getElementById('calcRateInfo');
+    if (!el) return;
+    el.textContent = fxRate ? ('匯率:1 日圓 ≈ ' + fxRate.toFixed(4) + ' 台幣・' + text) : text;
+  }
+
+  function calcRender(){
+    var resultEl = document.getElementById('calcResult');
+    if (!resultEl) return;
+    var jpy = parseFloat(document.getElementById('calcJpy').value);
+    if (!jpy || jpy <= 0 || !fxRate){
+      resultEl.innerHTML = '';
+      return;
+    }
+    var taxRate = parseFloat(document.getElementById('calcTaxRate').value) || 0;
+    var cardFee = parseFloat(document.getElementById('calcCardFee').value) || 0;
+    var cashback = parseFloat(document.getElementById('calcCardCashback').value) || 0;
+
+    var jpyAfterTax = jpy / (1 + taxRate);
+    var twdFull = jpy * fxRate;
+    var twdAfterTax = jpyAfterTax * fxRate;
+    var netCardPct = cardFee - cashback;
+    var cardMultiplier = 1 + netCardPct / 100;
+    var twdCardFull = twdFull * cardMultiplier;
+    var twdCardAfterTax = twdAfterTax * cardMultiplier;
+    var taxSaveNote = taxRate > 0 ? ('折稅省 NT$' + fmtMoney(twdFull - twdAfterTax)) : '不適用退稅';
+    var cardNote = netCardPct > 0 ? ('手續費淨支出 ' + netCardPct.toFixed(1) + '%')
+      : netCardPct < 0 ? ('回饋淨賺 ' + Math.abs(netCardPct).toFixed(1) + '%')
+      : '手續費與回饋抵銷';
+
+    var lines = [
+      { label:'現金・未折稅', note:'¥' + fmtMoney(jpy), value:twdFull },
+      { label:'現金・已折稅', note:taxSaveNote, value:twdAfterTax },
+      { label:'刷卡・未折稅', note:cardNote, value:twdCardFull },
+      { label:'刷卡・已折稅', note:cardNote + '・' + taxSaveNote, value:twdCardAfterTax }
+    ];
+    var minVal = Math.min.apply(null, lines.map(function(l){ return l.value; }));
+    resultEl.innerHTML = lines.map(function(l){
+      return '<div class="calc-line' + (l.value === minVal ? ' best' : '') + '">' +
+        '<div class="cl-label">' + l.label + '<span class="cl-note">' + l.note + '</span></div>' +
+        '<div class="cl-value">NT$ ' + fmtMoney(l.value) + '</div></div>';
+    }).join('');
+  }
+
+  function setupCalc(){
+    var jpyEl = document.getElementById('calcJpy');
+    var taxEl = document.getElementById('calcTaxRate');
+    var feeEl = document.getElementById('calcCardFee');
+    var cashbackEl = document.getElementById('calcCardCashback');
+    if (!jpyEl) return;
+    jpyEl.addEventListener('input', calcRender);
+    taxEl.addEventListener('change', calcRender);
+    feeEl.addEventListener('input', calcRender);
+    cashbackEl.addEventListener('input', calcRender);
+  }
+
+  function loadFx(){
+    var cached = null;
+    try { cached = JSON.parse(localStorage.getItem(FX_CACHE_KEY) || 'null'); } catch(e){}
+    if (cached){ fxRate = cached.rate; updateFxLabel(fmtUpdatedTime(cached.ts) + '(快取)'); calcRender(); }
+    else { updateFxLabel('載入中…'); }
+
+    fetch('https://open.er-api.com/v6/latest/JPY').then(function(res){
+      if (!res.ok) throw new Error('bad status');
+      return res.json();
+    }).then(function(json){
+      if (json.result !== 'success' || !json.rates || !json.rates.TWD) throw new Error('bad payload');
+      fxRate = json.rates.TWD;
+      var ts = Date.now();
+      try { localStorage.setItem(FX_CACHE_KEY, JSON.stringify({ts:ts, rate:fxRate})); } catch(e){}
+      updateFxLabel(fmtUpdatedTime(ts));
+      calcRender();
+    }).catch(function(){
+      if (!cached) updateFxLabel('無法取得匯率,請確認網路連線');
+      else updateFxLabel(fmtUpdatedTime(cached.ts) + '(快取・目前離線)');
+    });
   }
 
   function loadWeather(){
@@ -1115,6 +1262,8 @@
   renderOverviewPoster();
   loadWeather();
   setupWeatherCarousel();
+  loadFx();
+  setupCalc();
   renderPlaces();
   renderAccom();
   renderFood();
